@@ -1,0 +1,5 @@
+login;email;display_name;role_ids
+andy;andy@example.com;"Andy Person";[1,2,3]
+jerry;jerry@example.com;"Jerry Person";[1,3]
+victoria;victoria@example.com;"Victoria Person";[1,2,3]
+sam;sam@example.com;"Sam Person";[1]
