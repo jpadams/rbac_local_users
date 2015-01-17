@@ -1,6 +1,4 @@
-# Run this script from the master
-# /vagrant/scripts/setup_ds.sh
-# to configure the sample DS.
+# Gets role id numbers mapped to User Roles in RBAC for use in CSV 
 
 PUPPET='/opt/puppet/bin/puppet'
 
