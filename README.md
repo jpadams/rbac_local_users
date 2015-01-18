@@ -16,7 +16,6 @@ The CSV file is semi-colon delimited. See the foo.csv example file. The header i
 
 ## To Do:
 
- - Mail stuff needs some looking at.
-
- - Make ready for split install. Need to get certs/keys wrangled ahead of time and made an argument or something.
+ - Mail stuff needs some looking at. Not sure it works off localhost.
+ - Make ready for split install. Need to get certs/keys wrangled ahead of time and make arguments or something.
 
