@@ -10,7 +10,7 @@ The CSV file is semi-colon delimited. See the foo.csv example file. The header i
 Usage:
 
 ```
-# cat foo.csv | /opt/puppet/bin/puppet add_users.rb
+# cat foo.csv | /opt/puppet/bin/ruby add_users.rb
 ```
 
 To Do:
