@@ -2,6 +2,26 @@ require 'json'
 require 'csv'
 require 'net/smtp'
 
+############ why? #############
+###############################
+## Reads CSV stream of local users with header in
+## schema below from stdin with semicolon separator
+## and adds creates a local user via RBAC API. Then
+## pulls all users to acquire the SID (subject id) of
+## the newly-added users which is needed to make an
+## API request for a change password token. Token is
+## requested and an email composed with the token in
+## the proper URL format needed and sent to the new
+## user. Initially tested by sending email to
+## root@localhost. Comment line 96 to use user's email.
+##
+## CSV SCHEMA (I used semicolons instead of commas,
+## because commas are needed in array of role IDs
+## that the new user will belong to):
+##
+## login;email;display_name;role_ids 
+
+
 ############ helpers ##########
 ###############################
 puppet = '/opt/puppet/bin/puppet'
@@ -62,18 +82,18 @@ end
 
 response = rbac_rest_call("GET", "users", credentials)
 
-master_name   = "master.inf.puppetlabs.demo"
-mail_from     = "root@#{master_name}"
+server_name   = "localhost"
+mail_from     = "root@#{server_name}"
 
 JSON.parse(response).each do |record|
   l = users_hash[record["login"]]
   unless l.nil?
     id    = record["id"]
     token = rbac_rest_call("POST", "users/#{id}/password/reset", credentials,"","v1")
-    url       =  "https://#{master_name}/auth/reset?token=#{token}"
+    url       =  "https://#{server_name}/auth/reset?token=#{token}"
     mail_to   = record["email"]
-    ## the next line is for testing only and should be commented out
-    mail_to   = "root@#{master_name}"
+    ## next line for testing & should be commented out to use user's email 
+    mail_to   = "root@#{server_name}"
     mail_date = %x(/bin/date -R)
     user_name = record["display_name"]
 
