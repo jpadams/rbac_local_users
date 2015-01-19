@@ -43,7 +43,7 @@ def rbac_rest_call (method, endpoint, creds, json="", api_ver="v1")
     --cacert #{creds[:cacert]} \
     --cert   #{creds[:cert]} \
     --key    #{creds[:key]} \
-    https://localhost:4433/rbac-api/#{api_ver}/#{endpoint}".delete("\n")
+    https://#{console_server}:4433/rbac-api/#{api_ver}/#{endpoint}".delete("\n")
   resp = %x(#{cmd})
   ## don't know if api call succeeded, only if curl worked or not
   if ! $?.success?
@@ -112,7 +112,7 @@ login: #{record["login"]}
 url: #{url}
 MESSAGE_END
 
-    Net::SMTP.start('localhost') do |smtp|
+    Net::SMTP.start("#{smtp_server}") do |smtp|
       smtp.send_message message, mail_from, mail_to
     end
   end
