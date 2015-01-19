@@ -23,21 +23,21 @@ require 'net/smtp'
 
 ############ settings #########
 ###############################
-console_server_name   = "localhost"
-smtp_server_name      = "localhost"
-mail_from             = "root@#{console_server_name}"
-mail_subject          = "Please set your password for the Puppet Enterprise Console"
+@console_server_name   = "localhost"
+@smtp_server_name      = "localhost"
+@mail_from             = "root@#{@console_server_name}"
+@mail_subject          = "Please set your password for the Puppet Enterprise Console"
 
 ############ helpers ##########
 ###############################
-puppet = '/opt/puppet/bin/puppet'
+$puppet = '/opt/puppet/bin/puppet'
 credentials = {
-  :cacert => %x(#{puppet} config print localcacert),
-  :cert   => %x(#{puppet} config print hostcert),
-  :key    => %x(#{puppet} config print hostprivkey)
+  :cacert => %x(#{$puppet} config print localcacert),
+  :cert   => %x(#{$puppet} config print hostcert),
+  :key    => %x(#{$puppet} config print hostprivkey)
 }
 
-def rbac_rest_call (method, endpoint, creds, json="", api_ver="v1")
+def rbac_rest_call (method, endpoint, creds, json="", api_ver="v1", console_server=@console_server_name)
   cmd = "curl -s -k -X #{method} -H 'Content-Type: application/json' \
     -d \'#{json}\' \
     --cacert #{creds[:cacert]} \
@@ -93,18 +93,18 @@ JSON.parse(response).each do |record|
   unless l.nil?
     id    = record["id"]
     token = rbac_rest_call("POST", "users/#{id}/password/reset", credentials,"","v1")
-    url       =  "https://#{console_server_name}/auth/reset?token=#{token}"
+    url       =  "https://#{@console_server_name}/auth/reset?token=#{token}"
     mail_to   = record["email"]
     ## next line for testing & should be commented out to use user's email 
-    mail_to   = "root@#{smtp_server_name}"
+    mail_to   = "root@#{@smtp_server_name}"
     mail_date = %x(/bin/date -R)
     user_name = record["display_name"]
 
 message = <<MESSAGE_END
-From: Puppet Admin <#{mail_from}>
+From: Puppet Admin <#{@mail_from}>
 To: #{user_name} <#{mail_to}>
 Date: #{mail_date} 
-Subject: #{mail_subject}
+Subject: #{@mail_subject}
 
 Please vist the URL below to set your password:
 
@@ -112,8 +112,8 @@ login: #{record["login"]}
 url: #{url}
 MESSAGE_END
 
-    Net::SMTP.start("#{smtp_server}") do |smtp|
-      smtp.send_message message, mail_from, mail_to
+    Net::SMTP.start("#{@smtp_server}") do |smtp|
+      smtp.send_message message, @mail_from, mail_to
     end
   end
 end
